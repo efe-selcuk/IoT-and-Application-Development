@@ -1,0 +1,42 @@
+# Python files
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Certificate files (AWS IoT certificates)
+*.crt
+*.pem
+*.key
+
+# Project files
+*.idea/
+*.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Runtime files
+*.log
+*.pid
+*.seed
+*.bak
+*.swp
+*.tmp
+
+# Jupyter Notebook files
+.ipynb_checkpoints/
+
+# VSCode files
+.vscode/
+.history/
+
+# PyQt files
+*.pyc
+*.pyo
+__pycache__/
