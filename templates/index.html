@@ -4,27 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Temperature and Humidity Monitoring for Freezers</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .data-table th, .data-table td {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+    </style>
 </head>
 <body>
-    <h1>Real-time Temperature and Humidity Monitoring for Freezers</h1>
-    
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Freezer ID</th>
-                <th>Temperature (°C)</th>
-                <th>Humidity (%)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for dondurucu in dondurucular %}
-            <tr>
-                <td>{{ dondurucu['dondurucu_id'] }}</td>
-                <td>{{ dondurucu['sicaklik'] }}</td>
-                <td>{{ dondurucu['nem'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <h1 class="text-center mb-4">Real-time Temperature and Humidity Monitoring for Freezers</h1>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered data-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Freezer ID</th>
+                        <th>Temperature (°C)</th>
+                        <th>Humidity (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dondurucu in dondurucular %}
+                    <tr>
+                        <td>{{ dondurucu['dondurucu_id'] }}</td>
+                        <td>{{ dondurucu['sicaklik'] }}</td>
+                        <td>{{ dondurucu['nem'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
