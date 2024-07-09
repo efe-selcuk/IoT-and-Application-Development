@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 1200, 800)
 
         # Set window icon
-        self.setWindowIcon(QIcon('C:/Users/HP/OneDrive/Masaüstü/IoT and Application Development/morya.ico'))
+        self.setWindowIcon(QIcon(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\morya.ico"))
 
         # Main layout
         self.central_widget = QWidget()
@@ -147,14 +147,14 @@ class MainWindow(QMainWindow):
 
         # Update indicators
         if len(self.hum_data) > 0 and humidity > self.hum_data[-1]:
-            self.humidity_indicator.setPixmap(QPixmap("arrow_up.png"))
+            self.humidity_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_up.png"))
         else:
-            self.humidity_indicator.setPixmap(QPixmap("arrow_down.png"))
+            self.humidity_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_down.png"))
 
         if len(self.temp_data) > 0 and temperature > self.temp_data[-1]:
-            self.temperature_indicator.setPixmap(QPixmap("arrow_up.png"))
+            self.temperature_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_up.png"))
         else:
-            self.temperature_indicator.setPixmap(QPixmap("arrow_down.png"))
+            self.temperature_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_down.png"))
 
         # Update labels
         self.humidity_label.setText(f"Nem: {humidity:.2f}%")
