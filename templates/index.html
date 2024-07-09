@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature and Humidity Monitoring for Freezers</title>
+</head>
+<body>
+    <h1>Real-time Temperature and Humidity Monitoring for Freezers</h1>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Freezer ID</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dondurucu in dondurucular %}
+            <tr>
+                <td>{{ dondurucu['dondurucu_id'] }}</td>
+                <td>{{ dondurucu['sicaklik'] }}</td>
+                <td>{{ dondurucu['nem'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
