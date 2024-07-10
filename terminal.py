@@ -11,35 +11,80 @@ def create_connection(db_file):
         print(e)
     return conn
 
-# Sıcaklık sınırlarını kontrol etme ve uyarıyı dosyaya yazma
-def check_temperature_limits(conn, log_file):
-    sql = '''SELECT * FROM sensor_data ORDER BY id DESC LIMIT 1'''
-    cursor = conn.cursor()
-    cursor.execute(sql)
-    row = cursor.fetchone()
+# Veritabanında uyarı logları için tablo oluşturma
+def create_table(conn):
+    try:
+        sql_create_table = '''CREATE TABLE IF NOT EXISTS uyari_log (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            timestamp TEXT NOT NULL,
+                            temperature REAL NOT NULL,
+                            humidity REAL NOT NULL
+                          )'''
+        cursor = conn.cursor()
+        cursor.execute(sql_create_table)
+        conn.commit()
+    except sqlite3.Error as e:
+        print(e)
 
-    if row:
-        timestamp = row[1]
-        temperature = row[2]  # Tablodaki sıcaklık sütunu
-        if temperature < -5 or temperature > 20:
-            message = f'Uyarı: Sıcaklık sınırı aşıldı! Son sıcaklık: {temperature:.2f} C (Zaman: {timestamp})\n'
-            write_to_log(log_file, message)
-    else:
-        print('Veritabanında henüz veri yok.')
+# Sıcaklık sınırlarını kontrol etme ve uyarıyı veritabanına yazma
+def check_temperature_limits(conn, log_conn):
+    try:
+        # Son veriyi al
+        cursor_sensor = conn.cursor()
+        cursor_sensor.execute('SELECT * FROM sensor_data ORDER BY id DESC LIMIT 1')
+        row = cursor_sensor.fetchone()
 
-# Log dosyasına yazma
-def write_to_log(log_file, message):
-    log_path = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\{}'.format(log_file)
-    with open(log_path, 'a', encoding='utf-8') as file:
-        file.write(message)
+        if row:
+            timestamp = row[1]
+            temperature = row[2]  # Tablodaki sıcaklık sütunu
+            humidity = row[3]  # Tablodaki nem sütunu
+
+            # Sıcaklık sınırlarını kontrol et
+            if temperature < -5 or temperature > 20:
+                message = f'Uyarı: Sıcaklık sınırı aşıldı! Son sıcaklık: {temperature:.2f} C (Zaman: {timestamp})'
+                write_to_db(log_conn, timestamp, temperature, humidity, message)
+        else:
+            print('Veritabanında henüz veri yok.')
+    except sqlite3.Error as e:
+        print(e)
+
+# Uyarı logunu veritabanına yazma
+def write_to_db(conn, timestamp, temperature, humidity, message):
+    try:
+        sql_insert = '''INSERT INTO uyari_log (timestamp, temperature, humidity, message) VALUES (?, ?, ?, ?)'''
+        cursor = conn.cursor()
+        cursor.execute(sql_insert, (timestamp, temperature, humidity, message))
+        conn.commit()
+        print("Uyarı veritabanına kaydedildi.")
+    except sqlite3.Error as e:
+        print(e)
+
+# Veritabanındaki tüm uyarı loglarını okuma ve yazdırma
+def read_logs(conn):
+    try:
+        sql_read = '''SELECT * FROM uyari_log'''
+        cursor = conn.cursor()
+        cursor.execute(sql_read)
+        rows = cursor.fetchall()
+        for row in rows:
+            print(row)
+    except sqlite3.Error as e:
+        print(e)
 
 # Ana fonksiyon
 def main():
-    database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\terminal_data.db'
-    log_file = 'uyari_log.txt'
-    conn = create_connection(database)
+    sensor_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\terminal_data.db'
+    log_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\warnings_log.db'
+    
+    sensor_conn = create_connection(sensor_database)
+    log_conn = create_connection(log_database)
+    
+    if log_conn is not None:
+        create_table(log_conn)
+    
     while True:
-        check_temperature_limits(conn, log_file)
+        check_temperature_limits(sensor_conn, log_conn)
+        read_logs(log_conn)  # Logları okuyup yazdırma
         time.sleep(10)  # Her 10 saniyede bir kontrol et
 
 if __name__ == '__main__':

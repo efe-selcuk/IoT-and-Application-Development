@@ -6,8 +6,11 @@ import pyqtgraph as pg
 class RealtimeWidget(QWidget):
     def __init__(self):
         super().__init__()
-
         self.init_ui()
+
+        # Initialize previous values for comparison
+        self.prev_temperature = None
+        self.prev_humidity = None
 
     def init_ui(self):
         self.layout = QVBoxLayout(self)
@@ -78,16 +81,22 @@ class RealtimeWidget(QWidget):
         self.humidity_label.setText(f"Nem: {humidity:.2f}%")
         self.temperature_label.setText(f"Sıcaklık: {temperature:.2f}°C")
 
-        # Example: Update indicator images based on conditions
-        if humidity > 50:
-            self.humidity_indicator.setPixmap(QPixmap("path_to_high_humidity_icon.png"))
-        else:
-            self.humidity_indicator.setPixmap(QPixmap("path_to_normal_humidity_icon.png"))
+        # Update indicator images based on conditions
+        if self.prev_humidity is not None:
+            if humidity > self.prev_humidity:
+                self.humidity_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_up.png"))
+            else:
+                self.humidity_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_down.png"))
 
-        if temperature > 25:
-            self.temperature_indicator.setPixmap(QPixmap("path_to_high_temperature_icon.png"))
-        else:
-            self.temperature_indicator.setPixmap(QPixmap("path_to_normal_temperature_icon.png"))
+        if self.prev_temperature is not None:
+            if temperature > self.prev_temperature:
+                self.temperature_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_up.png"))
+            else:
+                self.temperature_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_down.png"))
+
+        # Update previous values
+        self.prev_humidity = humidity
+        self.prev_temperature = temperature
 
         # Append new data points
         self.plot_data_temp['x'].append(len(self.plot_data_temp['x']) + 1)
@@ -96,14 +105,6 @@ class RealtimeWidget(QWidget):
         self.plot_data_hum['x'].append(len(self.plot_data_hum['x']) + 1)
         self.plot_data_hum['y'].append(humidity)
 
-        # Limit data points to last 50 for better visualization
-        if len(self.plot_data_temp['x']) > 50:
-            self.plot_data_temp['x'] = self.plot_data_temp['x'][-50:]
-            self.plot_data_temp['y'] = self.plot_data_temp['y'][-50:]
-
-        if len(self.plot_data_hum['x']) > 50:
-            self.plot_data_hum['x'] = self.plot_data_hum['x'][-50:]
-            self.plot_data_hum['y'] = self.plot_data_hum['y'][-50:]
 
         # Update plots
         self.plot_widget_temp.clear()

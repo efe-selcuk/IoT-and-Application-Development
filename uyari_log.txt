@@ -1,3 +1,0 @@
-Uyarı: Sıcaklık sınırı aşıldı! Son sıcaklık: -5.74 C (Zaman: 2024-07-10 17:56:46)
-Uyarı: Sıcaklık sınırı aşıldı! Son sıcaklık: -5.46 C (Zaman: 2024-07-10 17:57:52)
-Uyarı: Sıcaklık sınırı aşıldı! Son sıcaklık: -9.79 C (Zaman: 2024-07-10 17:58:00)
