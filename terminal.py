@@ -1,12 +1,16 @@
+import os
 import time
 import sqlite3
 import tkinter as tk
 from tkinter import messagebox
 
+# Geçerli çalışma dizinini al
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
 # SQLite veritabanı bağlantısı oluşturma
 def create_connection(db_file):
     try:
-        conn = sqlite3.connect(db_file)
+        conn = sqlite3.connect(os.path.join(current_dir, db_file))
         return conn
     except sqlite3.Error as e:
         print(e)
@@ -85,8 +89,8 @@ def show_popup(message):
 
 # Ana fonksiyon
 def main():
-    sensor_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\SQL\terminal_data.db'
-    log_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\SQL\warnings_log.db'
+    sensor_database = 'SQL/terminal_data.db'
+    log_database = 'SQL/warnings_log.db'
     
     sensor_conn = create_connection(sensor_database)
     log_conn = create_connection(log_database)

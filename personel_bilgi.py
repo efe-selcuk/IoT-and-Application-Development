@@ -1,13 +1,15 @@
 import sqlite3
+import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit, QPushButton, QLabel, QDateEdit, QTimeEdit
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QDateTime
 
 class LogWidget(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.db_conn = sqlite3.connect(r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\SQL\personel_bilgi.db')
+        db_path = os.path.join(os.path.dirname(__file__), 'SQL', 'personel_bilgi.db')
+        self.db_conn = sqlite3.connect(db_path)
         self.create_table()  # Veritabanında tablo oluştur
 
         self.init_ui()
@@ -103,7 +105,7 @@ class LogWidget(QWidget):
 
         # Log table
         self.log_table = QTableWidget()
-        self.log_table.setColumnCount(5)
+        self.log_table.setColumnCount(6)  # ID sütunu eklenmiş durumda
         self.log_table.setHorizontalHeaderLabels(["ID", "Adı Soyadı", "Müdahale Tarihi", "Müdahale Saati", "Durum", "Zaman"])
         self.log_table.horizontalHeader().setFont(QFont('Arial', 12))
         self.log_table.horizontalHeader().setStretchLastSection(True)

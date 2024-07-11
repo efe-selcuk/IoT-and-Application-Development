@@ -3,7 +3,8 @@ import subprocess
 import random
 import time
 import sqlite3
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QStackedWidget, QTableWidgetItem, QLineEdit, QLabel, QTableWidget
+import os
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QStackedWidget
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QFont, QIcon
 from realtime_widget import RealtimeWidget
@@ -11,7 +12,8 @@ from personel_bilgi import LogWidget
 
 class DataLogger:
     def __init__(self):
-        self.conn = sqlite3.connect(r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\terminal_data.db')
+        db_path = os.path.join(os.path.dirname(__file__), 'SQL', 'terminal_data.db')
+        self.conn = sqlite3.connect(db_path)
         self.create_table()
 
     def create_table(self):
@@ -38,7 +40,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("ESP8266 AWS IoT Data Visualization")
         self.setGeometry(100, 100, 1200, 800)
 
-        self.setWindowIcon(QIcon(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\morya.ico"))
+        self.setWindowIcon(QIcon(os.path.join(os.path.dirname(__file__), 'images', 'morya.ico')))
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -101,7 +103,8 @@ def main():
     main_window.show()
 
     # terminal.py dosyasını başlat
-    subprocess.Popen(['python', r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\terminal.py'])
+    terminal_path = os.path.join(os.path.dirname(__file__), 'terminal.py')
+    subprocess.Popen(['python', terminal_path])
 
     sys.exit(app.exec_())
 

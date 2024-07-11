@@ -1,5 +1,6 @@
+import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QLabel, QSizePolicy
-from PyQt5.QtGui import QFont, QIcon, QPixmap
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt, QSize
 import pyqtgraph as pg
 
@@ -84,15 +85,15 @@ class RealtimeWidget(QWidget):
         # Update indicator images based on conditions
         if self.prev_humidity is not None:
             if humidity > self.prev_humidity:
-                self.humidity_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_up.png"))
+                self.humidity_indicator.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), 'images', 'arrow_up.png')))
             else:
-                self.humidity_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_down.png"))
+                self.humidity_indicator.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), 'images', 'arrow_down.png')))
 
         if self.prev_temperature is not None:
             if temperature > self.prev_temperature:
-                self.temperature_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_up.png"))
+                self.temperature_indicator.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), 'images', 'arrow_up.png')))
             else:
-                self.temperature_indicator.setPixmap(QPixmap(r"C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\images\arrow_down.png"))
+                self.temperature_indicator.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), 'images', 'arrow_down.png')))
 
         # Update previous values
         self.prev_humidity = humidity
@@ -104,7 +105,6 @@ class RealtimeWidget(QWidget):
 
         self.plot_data_hum['x'].append(len(self.plot_data_hum['x']) + 1)
         self.plot_data_hum['y'].append(humidity)
-
 
         # Update plots
         self.plot_widget_temp.clear()
