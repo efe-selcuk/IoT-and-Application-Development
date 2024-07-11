@@ -3,11 +3,11 @@ import subprocess
 import random
 import time
 import sqlite3
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QStackedWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QStackedWidget, QTableWidgetItem, QLineEdit, QLabel, QTableWidget
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QFont, QIcon
 from realtime_widget import RealtimeWidget
-from log_widget import LogWidget
+from personel_bilgi import LogWidget
 
 class DataLogger:
     def __init__(self):
@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
         self.btn_realtime.clicked.connect(lambda: self.display(0))
         self.top_menu.addWidget(self.btn_realtime)
 
-        self.btn_logs = QPushButton("Geçmiş Veriler")
+        self.btn_logs = QPushButton("Personel Bilgi Sistemi")
         self.btn_logs.setCheckable(True)
         self.btn_logs.setFont(QFont('Arial', 14))
         self.btn_logs.setStyleSheet("background-color: #555; color: white; padding: 10px; border: none;")

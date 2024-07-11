@@ -1,15 +1,16 @@
 import time
 import sqlite3
+import tkinter as tk
+from tkinter import messagebox
 
 # SQLite veritabanı bağlantısı oluşturma
 def create_connection(db_file):
-    conn = None
     try:
         conn = sqlite3.connect(db_file)
         return conn
     except sqlite3.Error as e:
         print(e)
-    return conn
+        return None
 
 # Veritabanında uyarı logları için tablo oluşturma
 def create_table(conn):
@@ -18,7 +19,8 @@ def create_table(conn):
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             timestamp TEXT NOT NULL,
                             temperature REAL NOT NULL,
-                            humidity REAL NOT NULL
+                            humidity REAL NOT NULL,
+                            message TEXT NOT NULL
                           )'''
         cursor = conn.cursor()
         cursor.execute(sql_create_table)
@@ -27,10 +29,10 @@ def create_table(conn):
         print(e)
 
 # Sıcaklık sınırlarını kontrol etme ve uyarıyı veritabanına yazma
-def check_temperature_limits(conn, log_conn):
+def check_temperature_limits(conn_sensor, conn_log):
     try:
         # Son veriyi al
-        cursor_sensor = conn.cursor()
+        cursor_sensor = conn_sensor.cursor()
         cursor_sensor.execute('SELECT * FROM sensor_data ORDER BY id DESC LIMIT 1')
         row = cursor_sensor.fetchone()
 
@@ -42,7 +44,8 @@ def check_temperature_limits(conn, log_conn):
             # Sıcaklık sınırlarını kontrol et
             if temperature < -5 or temperature > 20:
                 message = f'Uyarı: Sıcaklık sınırı aşıldı! Son sıcaklık: {temperature:.2f} C (Zaman: {timestamp})'
-                write_to_db(log_conn, timestamp, temperature, humidity, message)
+                write_to_db(conn_log, timestamp, temperature, humidity, message)
+                show_popup(message)  # Popup uyarı göster
         else:
             print('Veritabanında henüz veri yok.')
     except sqlite3.Error as e:
@@ -71,10 +74,19 @@ def read_logs(conn):
     except sqlite3.Error as e:
         print(e)
 
+# Popup uyarı gösterme
+def show_popup(message):
+
+    # Popup uyarı
+    root = tk.Tk()
+    root.withdraw()  # Ana pencereyi gizle
+    messagebox.showwarning("Sıcaklık Uyarısı", message)
+    root.destroy()
+
 # Ana fonksiyon
 def main():
-    sensor_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\terminal_data.db'
-    log_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\warnings_log.db'
+    sensor_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\SQL\terminal_data.db'
+    log_database = r'C:\Users\HP\OneDrive\Masaüstü\IoT and Application Development\SQL\warnings_log.db'
     
     sensor_conn = create_connection(sensor_database)
     log_conn = create_connection(log_database)
@@ -82,10 +94,16 @@ def main():
     if log_conn is not None:
         create_table(log_conn)
     
-    while True:
-        check_temperature_limits(sensor_conn, log_conn)
-        read_logs(log_conn)  # Logları okuyup yazdırma
-        time.sleep(10)  # Her 10 saniyede bir kontrol et
+    try:
+        while True:
+            check_temperature_limits(sensor_conn, log_conn)
+            read_logs(log_conn)  # Logları okuyup yazdırma
+            time.sleep(10)  # Her 10 saniyede bir kontrol et
+    finally:
+        if sensor_conn:
+            sensor_conn.close()
+        if log_conn:
+            log_conn.close()
 
 if __name__ == '__main__':
     main()
