@@ -13,6 +13,10 @@ class RealtimeWidget(QWidget):
         self.prev_temperature = None
         self.prev_humidity = None
 
+        # Initialize empty plots and data
+        self.plot_data_temp = {'x': [], 'y': []}
+        self.plot_data_hum = {'x': [], 'y': []}
+
     def init_ui(self):
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(20, 20, 20, 20)
@@ -73,10 +77,6 @@ class RealtimeWidget(QWidget):
         self.plot_widget_hum.showGrid(x=True, y=True, alpha=0.3)  # Grid settings
         self.plot_widget_hum.setMouseEnabled(x=True, y=False)
         self.layout.addWidget(self.plot_widget_hum)
-
-        # Initialize empty plots
-        self.plot_data_temp = {'x': [], 'y': []}
-        self.plot_data_hum = {'x': [], 'y': []}
 
     def update_data(self, temperature, humidity):
         self.humidity_label.setText(f"Nem: {humidity:.2f}%")

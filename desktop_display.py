@@ -4,11 +4,13 @@ import random
 import time
 import sqlite3
 import os
+import requests  # Bu kütüphaneyi import edin
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QStackedWidget
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QFont, QIcon
-from realtime_widget import RealtimeWidget
-from personel_bilgi import LogWidget
+from realtime_widget import RealtimeWidget  # Bu widget için uygun import
+from personel_bilgi import LogWidget  # Bu widget için uygun import
 
 class DataLogger:
     def __init__(self):
@@ -71,10 +73,10 @@ class MainWindow(QMainWindow):
         self.stacked_widget = QStackedWidget()
         self.main_layout.addWidget(self.stacked_widget)
 
-        self.realtime_widget = RealtimeWidget()
+        self.realtime_widget = RealtimeWidget()  # RealtimeWidget yerine kullanacağınız uygun widgeti ekleyin
         self.stacked_widget.addWidget(self.realtime_widget)
 
-        self.log_widget = LogWidget()
+        self.log_widget = LogWidget()  # LogWidget yerine kullanacağınız uygun widgeti ekleyin
         self.stacked_widget.addWidget(self.log_widget)
 
         self.timer = QTimer(self)
@@ -84,13 +86,28 @@ class MainWindow(QMainWindow):
         self.logger = DataLogger()  # Veritabanı ile logger oluştur
 
     def update_data(self):
-        humidity = random.uniform(30.0, 70.0)  # Simulated humidity value
-        temperature = random.uniform(-10.0, 20.0)  # Simulated temperature value
+        api_key = 'ZSDSMNPHJP1I435Z'  # Thingspeak API anahtarınızı buraya ekleyin
+        channel_id = '2597068'  # Thingspeak kanal ID'nizi buraya ekleyin
+        results = 1  # Alınacak son besleme sayısı
 
-        self.realtime_widget.update_data(temperature, humidity)
-        self.log_widget.update_data(temperature, humidity)
+        url = f'https://api.thingspeak.com/channels/{channel_id}/feeds.json?api_key={api_key}&results={results}'
 
-        self.logger.update_and_log_data(temperature, humidity)  # Veriyi logla
+        try:
+            response = requests.get(url)
+            data = response.json()
+
+            if 'feeds' in data:
+                latest_feed = data['feeds'][0]
+                temperature = float(latest_feed.get('field1', '0.0'))
+                humidity = float(latest_feed.get('field2', '0.0'))
+
+                self.realtime_widget.update_data(temperature, humidity)  # RealtimeWidget'iniz için uygun metod adını ve parametreleri kullanın
+                self.log_widget.update_data(temperature, humidity)  # LogWidget'iniz için uygun metod adını ve parametreleri kullanın
+
+                self.logger.update_and_log_data(temperature, humidity)  # Veriyi logla
+
+        except requests.exceptions.RequestException as e:
+            print(f'Hata oluştu: {e}')
 
     def display(self, index):
         self.stacked_widget.setCurrentIndex(index)
