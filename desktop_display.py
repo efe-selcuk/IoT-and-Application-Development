@@ -1,16 +1,19 @@
+# -- coding: utf-8 --
+#Created on Monday July 8 2024
+#@author: Efe Selcuk
+#Subject: temperature and humidity UI
 import sys
 import subprocess
 import random
 import time
 import sqlite3
 import os
-import requests  # Bu kütüphaneyi import edin
-
+import requests 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QStackedWidget
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QFont, QIcon
-from realtime_widget import RealtimeWidget  # Bu widget için uygun import
-from personel_bilgi import LogWidget  # Bu widget için uygun import
+from realtime_widget import RealtimeWidget  
+from personel_bilgi import LogWidget 
 
 class DataLogger:
     def __init__(self):
@@ -73,22 +76,22 @@ class MainWindow(QMainWindow):
         self.stacked_widget = QStackedWidget()
         self.main_layout.addWidget(self.stacked_widget)
 
-        self.realtime_widget = RealtimeWidget()  # RealtimeWidget yerine kullanacağınız uygun widgeti ekleyin
+        self.realtime_widget = RealtimeWidget()
         self.stacked_widget.addWidget(self.realtime_widget)
 
-        self.log_widget = LogWidget()  # LogWidget yerine kullanacağınız uygun widgeti ekleyin
+        self.log_widget = LogWidget()
         self.stacked_widget.addWidget(self.log_widget)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_data)
-        self.timer.start(1000)
+        self.timer.start(30000)
 
-        self.logger = DataLogger()  # Veritabanı ile logger oluştur
-
+        self.logger = DataLogger()
+    
     def update_data(self):
-        api_key = 'ZSDSMNPHJP1I435Z'  # Thingspeak API anahtarınızı buraya ekleyin
-        channel_id = '2597068'  # Thingspeak kanal ID'nizi buraya ekleyin
-        results = 1  # Alınacak son besleme sayısı
+        api_key = 'ZSDSMNPHJP1I435Z'
+        channel_id = '2597068'
+        results = 1
 
         url = f'https://api.thingspeak.com/channels/{channel_id}/feeds.json?api_key={api_key}&results={results}'
 
@@ -101,10 +104,10 @@ class MainWindow(QMainWindow):
                 temperature = float(latest_feed.get('field1', '0.0'))
                 humidity = float(latest_feed.get('field2', '0.0'))
 
-                self.realtime_widget.update_data(temperature, humidity)  # RealtimeWidget'iniz için uygun metod adını ve parametreleri kullanın
-                self.log_widget.update_data(temperature, humidity)  # LogWidget'iniz için uygun metod adını ve parametreleri kullanın
+                self.realtime_widget.update_data(temperature, humidity)
+                self.log_widget.update_data(temperature, humidity)
 
-                self.logger.update_and_log_data(temperature, humidity)  # Veriyi logla
+                self.logger.update_and_log_data(temperature, humidity)
 
         except requests.exceptions.RequestException as e:
             print(f'Hata oluştu: {e}')
@@ -119,7 +122,7 @@ def main():
     main_window = MainWindow()
     main_window.show()
 
-    # terminal.py dosyasını başlat
+    # terminal.py dosyasını başlatma
     terminal_path = os.path.join(os.path.dirname(__file__), 'terminal.py')
     subprocess.Popen(['python', terminal_path])
 

@@ -1,3 +1,7 @@
+# -- coding: utf-8 --
+#Created on Monday July 8 2024
+#@author: Efe Selcuk
+#Subject: temperature and humidity UI
 import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QLabel, QSizePolicy
 from PyQt5.QtGui import QFont, QPixmap
@@ -21,7 +25,7 @@ class RealtimeWidget(QWidget):
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(20, 20, 20, 20)
 
-        self.title_label = QLabel("Realtime Widget")
+        self.title_label = QLabel("Temperature And Humidity Monitor")
         self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setFont(QFont('Arial', 24))
         self.title_label.setStyleSheet("color: white;")
